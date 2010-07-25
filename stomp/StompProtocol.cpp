@@ -31,7 +31,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-StompProtocol *StompProtocol::create(char* cmd, StompStreamSocket *socket)
+StompProtocol* StompProtocol::create(char* cmd, StompStreamSocket* socket)
 {
     if (strcmp(cmd, "CONNECT") == 0)
         return new StompConnect(socket);
@@ -49,7 +49,7 @@ StompProtocol *StompProtocol::create(char* cmd, StompStreamSocket *socket)
 // virtual
 void StompConnect::execute(char* msgbody, int msglen)
 {
-    StompClient *client = new StompClient;
+    StompClient* client = new StompClient;
 
     client->set_socket(Socket);
     Socket->set_client(client);
@@ -60,13 +60,14 @@ void StompConnect::execute(char* msgbody, int msglen)
     Socket->send_term();
 }
 
+
 ////////////////////////////////////////////////////////////////////////////////
 
 // virtual
-void StompSubscribe::set_header(char *key, char *value)
+void StompSubscribe::set_header(char* key, char* value)
 {
     if (strcmp(key, "destination") == 0) {
-        StompClient *client = Socket->client();
+        StompClient* client = Socket->client();
         if (client != NULL)
             client->subscribe(value);
     }
@@ -76,7 +77,7 @@ void StompSubscribe::set_header(char *key, char *value)
 ////////////////////////////////////////////////////////////////////////////////
 
 // virtual
-void StompSend::set_header(char *key, char *value)
+void StompSend::set_header(char* key, char* value)
 {
     if (strcmp(key, "destination") == 0) {
         Dest = BindingManager::search(value);

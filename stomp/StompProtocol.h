@@ -35,7 +35,7 @@ protected:
     StompStreamSocket* Socket;
 
 public:
-    static StompProtocol* create(char* cmd, StompStreamSocket *socket);
+    static StompProtocol* create(char* cmd, StompStreamSocket* socket);
 
     StompProtocol(StompStreamSocket* socket) : Socket(socket) {}
     virtual ~StompProtocol() {}
@@ -52,15 +52,15 @@ public:
 class StompSubscribe : public StompProtocol {
 public:    
     StompSubscribe(StompStreamSocket* socket) : StompProtocol(socket) {}
-    virtual void set_header(char *key, char *value);
+    virtual void set_header(char* key, char* value);
 };
 
 class StompSend : public StompProtocol {
-    Binding *Dest;
+    Binding* Dest;
 
 public:    
     StompSend(StompStreamSocket* socket) : StompProtocol(socket) {}
-    virtual void set_header(char *key, char *value);
+    virtual void set_header(char* key, char* value);
     virtual void execute(char* msgbody, int msglen);
 };
 
