@@ -77,28 +77,28 @@ int Socket::sock_bind(int sock, uint16_t port)
 
     memset(&sin, 0, sizeof(sin));
     sin.sin_family = AF_INET;
-    sa_setport((SA *) &sin, port);
+    sa_setport((SA*) &sin, port);
 
-    if (bind(sock, (SA *) &sin, sizeof(sin)) < 0)
+    if (bind(sock, (SA*) &sin, sizeof(sin)) < 0)
         return -1;
 
     return 0;
 }
 
 // protected, static
-void Socket::sa_setport(struct sockaddr *sa, uint16_t port)
+void Socket::sa_setport(struct sockaddr* sa, uint16_t port)
 {
-    struct sockaddr_in *sin;
-    struct sockaddr_in6 *sin6;
+    struct sockaddr_in* sin;
+    struct sockaddr_in6* sin6;
 
     switch (sa->sa_family) {
     case AF_INET:
-        sin = (struct sockaddr_in *) sa;
+        sin = (struct sockaddr_in*) sa;
         sin->sin_port = htons(port);
         break;
 
     case AF_INET6:
-        sin6 = (struct sockaddr_in6 *) sa;
+        sin6 = (struct sockaddr_in6*) sa;
         sin6->sin6_port = htons(port);
         break;
     }
@@ -187,7 +187,7 @@ int StreamManager::wait_event(int timeout)
     }
 
     for (i = 0; i < count; i++) {
-        Socket *socket = (Socket *) events[i].data.ptr;
+        Socket* socket = (Socket*) events[i].data.ptr;
         if (socket != NULL) {
             if (socket->receive_event() < 0)
                 delete socket;
