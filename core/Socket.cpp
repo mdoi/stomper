@@ -128,10 +128,8 @@ int ListenSocket::receive_event()
 {
     int s;
 
-    if ((s = sock_accept(Sock)) < 0) {
-        printf("sock_accept() failed\n");
-        return 0;
-    }
+    if ((s = sock_accept(Sock)) < 0)
+        return -1;
 
     Manager->accept_event(s);
 
@@ -178,7 +176,7 @@ error:
 
 int StreamManager::wait_event(int timeout)
 {
-    int i, count;
+    int i, r, count;
     struct epoll_event events[8];
 
     if ((count = epoll_wait(PollFd, events, NELEMS(events), timeout)) < 0) {
@@ -189,7 +187,9 @@ int StreamManager::wait_event(int timeout)
     for (i = 0; i < count; i++) {
         Socket* socket = (Socket*) events[i].data.ptr;
         if (socket != NULL) {
-            if (socket->receive_event() < 0)
+            while ((r = socket->receive_event()) == 0)
+                ;
+            if (r == -2)
                 delete socket;
         }
     }

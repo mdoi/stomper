@@ -50,7 +50,7 @@ int StompStreamSocket::receive_event()
     char buf[4096], *line, *next, *value;
 
     if ((flen = getframe(buf, sizeof(buf))) < 0)
-        return -1;
+        return flen;
     if (flen == 0)
         return 0;   // it's not an error
 
@@ -60,7 +60,7 @@ int StompStreamSocket::receive_event()
     line = getline(&next, buf);
     printf("%s: command = %s\n", __func__, line);
 
-    StompProtocol *proto = StompProtocol::create(buf, this);
+    StompProtocol* proto = StompProtocol::create(buf, this);
     if (proto == NULL) {
         printf("%s: protocol create failed: command='%s'\n", __func__, buf);
         return -1;
@@ -144,11 +144,11 @@ int StompStreamSocket::getframe(char* buf, int bufmax)
 
     if ((len = recv(Sock, buf, bufmax, MSG_PEEK)) < 0)
         return -1;
-
     if (len == 0) 
-        return -1;
+        return -2;   // socket closed by peer
+
     if ((flen = frame_length(buf, len)) < 0)
-        return 0;   // it's not an error. drop it silently.
+        return -1;   // it's not an error. drop it silently.
 
     if (recv(Sock, buf, flen, 0) != flen)
         return -1;
